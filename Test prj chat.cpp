@@ -1,9 +1,9 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <ctime>
+#include <iostream> //nhap/ xuat 
+#include <vector> // mo rong dung luong( do rong, dai )
+#include <fstream>// lay du lieu tu file
+#include <sstream>// chuyen doi chuoi-> so 
+#include <iomanip>// dinh dang du lieu dau ra
+#include <ctime>// xu ly du lieu thoi gian
 
 using namespace std;
 
@@ -97,7 +97,7 @@ public:
     }
 
     /* ======================
-        LOAD / SAVE CSV
+        LOAD / SAVE CSV    // HOANG LAN
     ====================== */
 
     void loadRooms(){
@@ -246,7 +246,7 @@ public:
     }
 
     /* ======================
-        METHOD: assignRoom
+        METHOD: assignRoom // BINH MINH  
     ====================== */
 
     bool assignRoom(string studentId,string roomId,string startDate){
@@ -281,7 +281,7 @@ public:
     }
 
     /* ======================
-        METHOD: moveRoom
+        METHOD: moveRoom  // BINH MINH  
     ====================== */
 
     bool moveRoom(string studentId,string newRoomId,string date){
@@ -317,7 +317,7 @@ public:
     }
 
     /* ======================
-        METHOD: checkout
+        METHOD: checkout    // HOANG LAN
     ====================== */
 
     bool checkout(string studentId,string date){
@@ -337,7 +337,7 @@ public:
     }
 
     /* ======================
-        METHOD: roomStatus
+        METHOD: roomStatus   // DUC MINH
     ====================== */
 
     void roomStatus(string roomId){
@@ -358,7 +358,7 @@ public:
     }
 
     /* ======================
-        METHOD: occupancyReport
+        METHOD: occupancyReport // DUC MINH
     ====================== */
 
     string occupancyReport(){
@@ -388,7 +388,7 @@ public:
 
     /* ======================
         EXTENSION 1
-        calcMonthlyBill
+        calcMonthlyBill    // HOANG LAN
     ====================== */
 
     double calcMonthlyBill(string studentId,int month){
@@ -412,7 +412,7 @@ public:
 
     /* ======================
         EXTENSION 2
-        overCapacityAlert
+        overCapacityAlert    // BINH MINH
     ====================== */
 
     vector<string> overCapacityAlert(){
@@ -432,8 +432,8 @@ public:
 
     /* ======================
         EXTENSION 3
-        exportDormReport
-    ====================== */
+        exportDormReport     // DUC MINH
+    ====================== */   
 
     bool exportDormReport(string filename){
 
@@ -470,7 +470,7 @@ public:
 };
 
 /* ======================
-        MAIN MENU
+        MAIN MENU    // DUC MINH
 ====================== */
 
 int main(){
@@ -496,12 +496,10 @@ int main(){
         cout<<"0 Exit\n";
 
         cin>>choice;
-        if(choice==1)
-		{
-			dorm.addRoom();
-		 } 
-        if(choice==2)
-		{
+        if(choice==1){
+		dorm.addRoom();
+		} 
+        if(choice==2){
 		dorm.addStudent();
 		}
 
