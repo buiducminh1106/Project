@@ -59,11 +59,11 @@ class DormService{
 
 private:
 
-    vector<Room> rooms;
+    vector<Room> rooms; // tang giam do dai rong khong can dinh dang truoc
     vector<Student> students;
     vector<Stay> stays;
 
-public:
+public: 
 
     /* ======================
         UTILITY FUNCTIONS
@@ -342,20 +342,71 @@ public:
 
     void roomStatus(string roomId){
 
-        cout<<"Students in room "<<roomId<<"\n";
+    // ===== CASE 1: ALL ROOM =====
+    if(roomId == "ALL"){
 
-        for(auto &s:stays){
+        for(auto &r : rooms){
 
-            if(s.roomId==roomId && s.status=="Active"){
+            cout << "\n=== Room " << r.roomId << " ===\n";
 
-                Student* st=findStudent(s.studentId);
+            int count = 0;
 
-                cout<<st->studentId<<" "
-                    <<st->name<<" "
-                    <<st->phone<<"\n";
+            for(auto &s : stays){
+
+                if(s.roomId == r.roomId && s.status == "Active"){
+
+                    Student* st = findStudent(s.studentId);
+
+                    if(st){
+                        cout << st->studentId << " "
+                             << st->name << " "
+                             << st->phone << "\n";
+                    }
+
+                    count++;
+                }
             }
+
+            if(count == 0){
+                cout << "No students\n";
+            }
+
+            cout << "Capacity: " << count << "/" << r.capacity << "\n";
+        }
+
+        return;
+    }
+
+    // ===== CASE 2: SINGLE ROOM =====
+    cout << "Students in room " << roomId << "\n";
+
+    int count = 0;
+
+    for(auto &s: stays){
+
+        if(s.roomId == roomId && s.status == "Active"){
+
+            Student* st = findStudent(s.studentId);
+
+            if(st){
+                cout << st->studentId << " "
+                     << st->name << " "
+                     << st->phone << "\n";
+            }
+
+            count++;
         }
     }
+
+    if(count == 0){
+        cout << "No students\n";
+    }
+
+    Room* r = findRoom(roomId);
+    if(r){
+        cout << "Capacity: " << count << "/" << r->capacity << "\n";
+    }
+}
 
     /* ======================
         METHOD: occupancyReport // DUC MINH
@@ -391,24 +442,50 @@ public:
         calcMonthlyBill    // HOANG LAN
     ====================== */
 
-    double calcMonthlyBill(string studentId,int month){
+    double calcMonthlyBill(string studentId, string currentDate){
 
-        double amount=0;
+    double amount = 0;
 
-        for(auto &s:stays){
+    // parse date 
+    int cy, cm, cd;
+    sscanf(currentDate.c_str(), "%d-%d-%d", &cy, &cm, &cd);
 
-            if(s.studentId!=studentId)
-                continue;
+    for(auto &s : stays){
 
-            Room* r=findRoom(s.roomId);
+        if(s.studentId != studentId)
+            continue;
 
-            int days=15; // simplified overlap
+        Room* r = findRoom(s.roomId);
+        if(!r) continue;
 
-            amount+=r->pricePerMonth/30*days;
+        // parse start
+        int sy, sm, sd;
+        sscanf(s.startDate.c_str(), "%d-%d-%d", &sy, &sm, &sd);
+
+        // parse end
+        int ey, em, ed;
+
+        if(s.endDate == "" || s.status == "Active"){
+            ey = cy; em = cm; ed = cd; // chua checkout
+        }else{
+            sscanf(s.endDate.c_str(), "%d-%d-%d", &ey, &em, &ed);
         }
 
-        return amount;
+        //1 month = 30 days
+        int totalDays =
+            (ey - sy) * 360 +
+            (em - sm) * 30 +
+            (ed - sd);
+
+        if(totalDays < 0) continue;
+
+        double pricePerDay = r->pricePerMonth / 30;
+
+        amount += pricePerDay * totalDays;
     }
+
+    return amount;
+}
 
     /* ======================
         EXTENSION 2
@@ -542,34 +619,29 @@ int main(){
         }
 
         if(choice==6){
-
-            string r;
-            cout<<"RoomId:";
-            cin>>r;
-
-            dorm.roomStatus(r);
-        }
+		    string r;
+		    cout<<"RoomId (or ALL): ";
+		    cin>>r;
+			
+			dorm.roomStatus(r);
+}
 
         if(choice==7){
 
             cout<<dorm.occupancyReport();
         }
 
-        if(choice==8){
+       if(choice==8){
+	   string s, date;
 
-            string s;
-            int m;
+    cout<<"StudentId:"; cin>>s;
+    cout<<"Current Date (YYYY-MM-DD): "; cin>>date;
 
-            cout<<"StudentId:";
-            cin>>s;
-
-            cout<<"Month:";
-            cin>>m;
-
-            cout<<"Bill="
-            <<dorm.calcMonthlyBill(s,m)
-            <<endl;
-        }
+    cout<<fixed<<setprecision(0);
+    cout<<"Bill="
+    <<dorm.calcMonthlyBill(s,date)
+    <<endl;
+}
 
         if(choice==9){
 
